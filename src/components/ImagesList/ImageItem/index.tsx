@@ -1,15 +1,20 @@
 import React from 'react';
 import './style.css';
 
-export default React.memo(function ({ friendlyName, size, data }: { friendlyName: string, size: number, data: string }) {
+interface ImageItemProps extends Image {
+  onDeleteButtonClick?: (friendlyName: string) => void;
+}
 
-    function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
-        e.preventDefault();
-    }
+export default React.memo(function ({ friendlyName, size, isRemoving, data, onDeleteButtonClick }: ImageItemProps) {
 
-    return (<div className="ImageItem">
-        <label>{friendlyName}</label>
-        <label>{size}</label>
-        <button onClick={handleClick}>delete</button>
-    </div>);
+  function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    onDeleteButtonClick && onDeleteButtonClick(friendlyName);
+  }
+
+  return (<div className="ImageItem">
+    <label>{friendlyName}</label>
+    <label>{size}</label>
+    <button onClick={handleClick} disabled={isRemoving}>delete</button>
+  </div>);
 })
