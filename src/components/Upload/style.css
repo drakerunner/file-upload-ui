@@ -1,0 +1,5 @@
+@media only screen and (max-width: 600px) {
+    .Upload>button {
+        width: 100%;
+    }
+}

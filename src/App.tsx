@@ -1,26 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
 
-function App() {
+import SearchBar from './components/SearchBar';
+import Upload from './components/Upload';
+import ImagesList from './components/ImagesList';
+
+export default function () {
+
+  const [searchPattern, setSearchPattern] = useState('');
+
+  function handleSearchPatternChange(pattern: string) {
+    setSearchPattern(pattern);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div>
+        <header>
+          <SearchBar onSearchPatternChange={handleSearchPatternChange} />
+          <Upload />
+        </header>
+        <main>
+          <ImagesList filter={searchPattern} />
+        </main>
+      </div>
     </div>
   );
 }
-
-export default App;
