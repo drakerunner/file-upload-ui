@@ -3,30 +3,55 @@ import './App.css';
 
 import SearchBar from './components/SearchBar';
 import Upload from './components/Upload';
-import Loading from './components/Loading';
+import Spinner from './components/Spinner';
 import ImagesList from './components/ImagesList';
 
-import useImages, { PageStatus } from './shared-state/use-images';
+import useImages, { ApiStatus } from './state/use-images';
 
 export default function () {
 
-  const [{ pageStatus, images }, dispatch] = useImages();
-  const isLoading = pageStatus !== PageStatus.Ready;
+  const [{ apiStatus, images }, dispatch] = useImages();
+  const main = apiStatus === ApiStatus.Ready
+    ? <ImagesList images={images} onDeleteButtonClick={handleDeleteButtonClick} onUploadButtonClick={handleFileSelected} />
+    : <Spinner />
+    ;
 
   useEffect(() => {
-    if (pageStatus === PageStatus.Unitialized) {
-      dispatch({ type: 'fetchImages' });
+    if (apiStatus === ApiStatus.Unitialized) {
+      dispatch({ type: 'beginFetchingImages' });
 
       fetch('api/images')
         .then(res => res.json())
         .then(
-          result => dispatch({ type: 'setImages', data: result }),
+          result => dispatch({ type: 'finishFetchingImages', data: result }),
           error => dispatch({ type: 'setError', error }))
     }
   });
 
   function handleSearchPatternChange(pattern: string) {
-    dispatch({ type: 'filterImages', pattern });
+    dispatch({ type: 'beginFilteringImages', pattern });
+  }
+
+  function handleFileSelected(file: File | undefined | null, friendlyName: string) {
+    if (file) {
+      dispatch({
+        type: 'beginAddingImage', image: {
+          friendlyName,
+          size: file.size,
+          file,
+          status: 'adding'
+        }
+      })
+
+      const body = new FormData();
+      body.append('file', file);
+
+      fetch('api/images/' + encodeURIComponent(friendlyName), { method: 'POST', body })
+        .then(
+          res => dispatch({ type: 'finishAddingImage', friendlyName, successful: res.ok }),
+          error => dispatch({ type: 'finishAddingImage', friendlyName, successful: false }))
+        ;
+    }
   }
 
   function handleDeleteButtonClick(friendlyName: string) {
@@ -44,10 +69,10 @@ export default function () {
       <div>
         <header>
           <SearchBar onSearchPatternChange={handleSearchPatternChange} />
-          <Upload />
+          <Upload onFileSelected={handleFileSelected} />
         </header>
         <main>
-          {isLoading ? <Loading /> : <ImagesList images={images} onDeleteButtonClick={handleDeleteButtonClick} />}
+          {main}
         </main>
       </div>
     </div>
