@@ -10,8 +10,8 @@ export default function ({ images, onUploadButtonClick, onDeleteButtonClick }: {
   return (
     <div className='ImageList'>
       <header>
-        <label>{images.length} documents</label>
-        <label>Total size: <FileSize bytes={totalSize} /></label>
+        <span className='ImageList-documents'>{images.length} documents</span>
+        <span className='ImageList-totalSize'>Total size: <FileSize bytes={totalSize} /></span>
       </header>
       <main>
         {images.map(i => <ImageItem key={i.friendlyName} {...i} onDeleteButtonClick={onDeleteButtonClick} onUploadButtonClick={onUploadButtonClick} />)}

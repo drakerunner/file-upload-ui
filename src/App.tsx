@@ -8,6 +8,10 @@ import ImagesList from './components/ImagesList';
 
 import useImages, { ApiStatus } from './state/use-images';
 
+export const GetImagesEndpoint = 'api/images';
+export const SearchImagesEndpoint = 'api/images/search?pattern=';
+export const PostOrDeleteImageEndpoint = 'api/images/';
+
 export default function () {
 
   const [{ apiStatus, images }, dispatch] = useImages();
@@ -20,16 +24,22 @@ export default function () {
     if (apiStatus === ApiStatus.Unitialized) {
       dispatch({ type: 'beginFetchingImages' });
 
-      fetch('api/images')
+      fetch(GetImagesEndpoint)
         .then(res => res.json())
         .then(
           result => dispatch({ type: 'finishFetchingImages', data: result }),
-          error => dispatch({ type: 'setError', error }))
+          error => dispatch({ type: 'finishFetchingImages', data: [] }))
     }
   });
 
   function handleSearchPatternChange(pattern: string) {
-    dispatch({ type: 'beginFilteringImages', pattern });
+    dispatch({ type: 'beginFetchingImages' });
+
+    fetch(SearchImagesEndpoint + encodeURIComponent(pattern))
+      .then(res => res.json())
+      .then(
+        result => dispatch({ type: 'finishFetchingImages', data: result }),
+        error => dispatch({ type: 'finishFetchingImages', data: [] }))
   }
 
   function handleFileSelected(file: File | undefined | null, friendlyName: string) {
@@ -46,7 +56,7 @@ export default function () {
       const body = new FormData();
       body.append('file', file);
 
-      fetch('api/images/' + encodeURIComponent(friendlyName), { method: 'POST', body })
+      fetch(PostOrDeleteImageEndpoint + encodeURIComponent(friendlyName), { method: 'POST', body })
         .then(
           res => dispatch({ type: 'finishAddingImage', friendlyName, successful: res.ok }),
           error => dispatch({ type: 'finishAddingImage', friendlyName, successful: false }))
@@ -57,7 +67,7 @@ export default function () {
   function handleDeleteButtonClick(friendlyName: string) {
     dispatch({ type: 'beginRemovingImage', friendlyName });
 
-    fetch('api/images/' + encodeURIComponent(friendlyName), { method: 'DELETE' })
+    fetch(PostOrDeleteImageEndpoint + encodeURIComponent(friendlyName), { method: 'DELETE' })
       .then(
         res => dispatch({ type: 'finishRemovingImage', friendlyName, successful: res.ok }),
         error => dispatch({ type: 'finishRemovingImage', friendlyName, successful: false }))

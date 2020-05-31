@@ -20,17 +20,19 @@ export default function ({ onSearchPatternChange }: { onSearchPatternChange?: (p
     if (!value || !value.trim() || value === defaultValue) {
       setSearchPattern(defaultValue);
     }
+
+    onSearchPatternChange && onSearchPatternChange(value.trim());
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
 
     setSearchPattern(value);
-    onSearchPatternChange && onSearchPatternChange(value);
   }
 
   return (<div className='SearchBar'>
     <input
+      className='SearchBar-input'
       ref={inputRef}
       onFocus={handleFocus}
       onBlur={handleBlur}

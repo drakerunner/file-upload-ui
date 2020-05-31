@@ -3,7 +3,8 @@
 interface Image {
   friendlyName: string;
   size: number;
-  data?: string;
   file?: File;
-  status: 'adding' | 'removing' | 'failedToAdd' | 'failedToRemove' | 'ready';
+  status: ImageStatus;
 };
+
+type ImageStatus = 'adding' | 'removing' | 'failedToAdd' | 'failedToRemove' | 'ready';

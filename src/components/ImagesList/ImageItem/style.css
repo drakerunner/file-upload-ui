@@ -4,11 +4,12 @@
   grid-gap             : 6px;
   border               : solid 1px black;
   padding              : 15px;
-  width                : 280px;
-  margin-top           : 10px;
+  width                : 100%;
+  box-sizing           : border-box;
+  max-width            : 320px;
 }
 
-.ImageItem>label {
+.ImageItem>span {
   display          : block;
   grid-column-start: 1;
   grid-column-end  : 2;
@@ -16,6 +17,6 @@
 
 @media only screen and (max-width: 600px) {
   .ImageItem {
-    width: 100%;
+    max-width: none;
   }
 }

@@ -11,7 +11,7 @@ export default function ({ onFileSelected }: { onFileSelected?: (selectedFile: F
   }
 
   function handleFileInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const { files } = fileRef.current || {};
+    const { files } = e.target;
     const file = files && files[0];
     const friendlyName = file?.name || "";
 
@@ -22,10 +22,11 @@ export default function ({ onFileSelected }: { onFileSelected?: (selectedFile: F
 
   return (<div className='Upload'>
     <input
+      className="Upload-input"
       ref={fileRef}
       type="file"
       onChange={handleFileInputChange}
     />
-    <button onClick={handleButtonClick}>Upload</button>
+    <button className="Upload-button" onClick={handleButtonClick}>Upload</button>
   </div>);
 }

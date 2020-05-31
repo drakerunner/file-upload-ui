@@ -8,12 +8,12 @@ interface ImageItemProps extends Image {
   onUploadButtonClick?: (file: File | undefined | null, friendlyName: string) => void;
 }
 
-export default React.memo(function ({ friendlyName, size, status, file, data, onDeleteButtonClick, onUploadButtonClick }: ImageItemProps) {
+export default React.memo(function ({ friendlyName, size, status, file, onDeleteButtonClick, onUploadButtonClick }: ImageItemProps) {
 
   const disabled = (status === 'adding' || status === 'removing');
   const button = (status === 'failedToAdd')
-    ? <button onClick={handleUploadButtonClick}>Upload</button>
-    : <button onClick={handleDeleteButtonClick} disabled={disabled}>Delete</button>
+    ? <button className="ImageItem-upload" onClick={handleUploadButtonClick}>Upload</button>
+    : <button className="ImageItem-delete" onClick={handleDeleteButtonClick} disabled={disabled}>Delete</button>
 
   function handleDeleteButtonClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -26,7 +26,7 @@ export default React.memo(function ({ friendlyName, size, status, file, data, on
   }
 
   return (<div className="ImageItem">
-    <label>{friendlyName}</label>
+    <span className="ImageItem-friendlyName">{friendlyName}</span>
     <FileSize bytes={size} />
     {button}
   </div>);

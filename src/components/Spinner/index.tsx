@@ -1,3 +1,3 @@
 import React from 'react';
 
-export default () => (<div>Loading...</div>)
+export default () => (<div className="Spinner">Loading...</div>)
