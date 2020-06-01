@@ -7,6 +7,4 @@ export type Action =
 
   | { type: 'beginRemovingImage', friendlyName: string }
   | { type: 'finishRemovingImage', friendlyName: string, successful: boolean }
-
-  | { type: 'setError', error: any }
   ;

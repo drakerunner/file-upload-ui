@@ -31,6 +31,10 @@ export default class {
   }
 
   private finishFetchingImages(state: State, images: any): State {
+    if (!Array.isArray(images)) {
+      images = [];
+    }
+
     return {
       ...state,
       apiStatus: ApiStatus.Ready,

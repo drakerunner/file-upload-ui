@@ -36,10 +36,9 @@ export default function () {
     dispatch({ type: 'beginFetchingImages' });
 
     fetch(SearchImagesEndpoint + encodeURIComponent(pattern))
-      .then(res => res.json())
-      .then(
-        result => dispatch({ type: 'finishFetchingImages', data: result }),
-        error => dispatch({ type: 'finishFetchingImages', data: [] }))
+      .then(res => res.json(), error => dispatch({ type: 'finishFetchingImages', data: [] }))
+      .then(result => dispatch({ type: 'finishFetchingImages', data: result }))
+      ;
   }
 
   function handleFileSelected(file: File | undefined | null, friendlyName: string) {

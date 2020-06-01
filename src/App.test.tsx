@@ -56,13 +56,24 @@ describe('App', () => {
       validateNumberOfDocs(1);
     });
 
-    it('should handle errors when searching images', async () => {
-      await act(async () => {
-        result = render(<App />);
+    describe('when handling errors from search images', () => {
+      it('should handle promise rejection', async () => {
+        await act(async () => {
+          result = render(<App />);
+        });
+
+        await searchImages('Doc 2');
+        validateNumberOfDocs(0);
       });
 
-      await searchImages('Doc 2');
-      validateNumberOfDocs(0);
+      it('should handle wrong return type', async () => {
+        await act(async () => {
+          result = render(<App />);
+        });
+
+        await searchImages('Doc 3');
+        validateNumberOfDocs(0);
+      });
     });
 
     it('should upoad image', async () => {
@@ -122,6 +133,10 @@ describe('App', () => {
             var pattern = decodeURIComponent(input.replace(SearchImagesEndpoint, ''));
             if (pattern === 'Doc 2') {
               throw new Error();
+            }
+
+            if (pattern === 'Doc 3') {
+              return { json: async () => ({}) }
             }
 
             return { json: async () => images.filter(i => i.friendlyName.indexOf(pattern) >= 0) }
